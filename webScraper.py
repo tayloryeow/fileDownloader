@@ -4,16 +4,33 @@ import requests
 import re
 import sys
 import urllib.request
+import time
 
 def downloadFiles(files):
     destFolder= input("Where do you want to put the files?: ")
     destFolder = "C:/temp"
+    user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 
-    try:
-        dest = destFolder + '/' + files[0].replace('/', '_')
-        urllib.request.urlretrieve(root + files[0], dest)
-    except Exception as e:
-        print(str(e))
+    backoff = 5
+
+    #Remove each file upon successfull deletion. Repeat until all files are removed
+    while files:
+        for file in files:
+            try:
+                print(file)
+                dest = destFolder + '/' + file.replace('/', '_')
+                urllib.request.urlretrieve(root + file, dest)
+                files.remove(file)
+            except Exception as err:
+                print(str(err))
+                if err.code == 404:
+                    print("Page not found!")
+                elif err.code == 403:
+                    print("Access Denied!")
+                else:
+                    print("Something went wrong")
+                    time.sleep(backoff)
+                    backoff += backoff
 
 def getLinks(root, ext):
     # Get html tree
