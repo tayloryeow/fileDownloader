@@ -6,19 +6,12 @@ import sys
 import urllib.request
 
 def downloadFiles(files):
-    downloadDest = input("Where do you want to put the files?: ")
-    downloadDest = "C:/temp"
+    destFolder= input("Where do you want to put the files?: ")
+    destFolder = "C:/temp"
 
     try:
-        testfile = urllib.request.urlopen(root + files[0])
-        print(files[0])
-        print(testfile.read())
-
-        files[0] = files[0].replace('/', '_')
-        saveFile = open(downloadDest + "/" + files[0], 'w')
-        saveFile.write(str(testfile.read()))
-        hm = testfile.read()
-        saveFile.close()
+        dest = destFolder + '/' + files[0].replace('/', '_')
+        urllib.request.urlretrieve(root + files[0], dest)
     except Exception as e:
         print(str(e))
 
